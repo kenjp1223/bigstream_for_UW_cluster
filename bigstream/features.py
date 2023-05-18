@@ -96,25 +96,28 @@ def pairwise_correlation(A, B):
     correlations : 2d-array, NxM
         N is the length of A and M is the length of B
     """
+    if (len(a_con.shape) <= 1)|(len(b_con.shape) <= 1):
+        corr = []
+        print("not enough features") # for debug
+    else:
+        # flatten contexts into array
+        a_con = np.array( [a.flatten() for a in A] )
+        b_con = np.array( [b.flatten() for b in B] )
 
-    # flatten contexts into array
-    a_con = np.array( [a.flatten() for a in A] )
-    b_con = np.array( [b.flatten() for b in B] )
+        # get means and std for all contexts, center contexts
+        a_mean, a_std = _stats(a_con)
+        b_mean, b_std = _stats(b_con)
+        a_con = a_con - a_mean[..., None]
+        b_con = b_con - b_mean[..., None]
 
-    # get means and std for all contexts, center contexts
-    a_mean, a_std = _stats(a_con)
-    b_mean, b_std = _stats(b_con)
-    a_con = a_con - a_mean[..., None]
-    b_con = b_con - b_mean[..., None]
+        # compute pairwise correlations
+        corr = np.matmul(a_con, b_con.T)
+        corr = corr / a_std[..., None]
+        corr = corr / b_std[None, ...]
+        corr = corr / a_con.shape[1]
 
-    # compute pairwise correlations
-    corr = np.matmul(a_con, b_con.T)
-    corr = corr / a_std[..., None]
-    corr = corr / b_std[None, ...]
-    corr = corr / a_con.shape[1]
-
-    # contexts with no variability are nan, set to 0
-    corr[np.isnan(corr)] = 0
+        # contexts with no variability are nan, set to 0
+        corr[np.isnan(corr)] = 0
     return corr
 
 
