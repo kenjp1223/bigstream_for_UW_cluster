@@ -312,6 +312,8 @@ def distributed_piecewise_alignment_pipeline(
                     missing_weights[region] += weights[neighbor_region]
 
             # rebalance the weights
+            missing_weights[missing_weights == 1] = 0.999
+            
             weights = weights / (1 - missing_weights)
             weights[np.isnan(weights)] = 0.  # edges of blocks are 0/0
             weights = weights.astype(np.float32)
