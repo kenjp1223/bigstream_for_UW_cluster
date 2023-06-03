@@ -217,12 +217,16 @@ def feature_point_ransac_affine_align(
     correlations = features.pairwise_correlation(
         fix_spot_contexts, mov_spot_contexts,
     )
-    print(correlations) # for debug
-    fix_spots, mov_spots = features.match_points(
+    #print(correlations) # for debug
+    if len(correlations) != 0:
+        fix_spots, mov_spots = features.match_points(
         fix_spots, mov_spots,
         correlations, match_threshold,
     )
-
+    else:
+        fix_spots = np.array([])
+        mov_spots = np.array([])
+    
     # check spot counts
     if fix_spots.shape[0] < 50:
         print('Fewer than 50 spots found in fixed image, returning default')
