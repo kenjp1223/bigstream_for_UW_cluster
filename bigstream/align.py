@@ -217,6 +217,7 @@ def feature_point_ransac_affine_align(
     correlations = features.pairwise_correlation(
         fix_spot_contexts, mov_spot_contexts,
     )
+    print(correlations) # for debug
     fix_spots, mov_spots = features.match_points(
         fix_spots, mov_spots,
         correlations, match_threshold,
