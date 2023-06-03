@@ -143,6 +143,16 @@ def match_points(a_pos, b_pos, scores, threshold):
 
     # get highest scores above threshold
     best_indcs = np.argmax(scores, axis=1)
+    '''
+    print(scores.shape) # for debug
+    if len(scores.shape) == 2:
+        best_indcs = np.argmax(scores, axis=1)
+    elif len(scores.shape) == 2:
+        best_indcs = np.argmax(scores)
+    else:
+        best_indcs = []
+    '''
+        
     a_indcs = range(len(a_pos))
     keeps = scores[(a_indcs, best_indcs)] > threshold
 
